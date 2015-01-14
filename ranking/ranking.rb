@@ -23,14 +23,14 @@ print "WORD\t\tFREQUENCY\n"
 words.sort_by{|word,count| [-count,word]}.each do |word,count|
   print "#{word}\t#{count}\n"
 end
-
 =end
+
 
 #!/usr/bin/ruby
 # -*- mode:ruby; coding:utf-8 -*-
 require 'find'
 
-directory = "japanese.txt"
+directory = "wakati.txt"
 words = Hash.new(0)
 
 Find.find(directory) do |path|
