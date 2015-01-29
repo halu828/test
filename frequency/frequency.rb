@@ -12,7 +12,7 @@ File.open("tag_delete.txt","w") do |out|
   out.puts "#{str.gsub(/<("[^"]*"|'[^']*'|[^'">])*>/, "")}"
 end
 
-# タグが消されたテキストを分かち書きする
+# タグが消されたテキストを分かち書きする(ファイルに保存せずにRubyで文字列として受け取る)
 # `mecab -O wakati tag_delete.txt -o wakati.txt`
 wakati = `mecab -O wakati tag_delete.txt`
 
@@ -39,7 +39,7 @@ end
 wordsArr = words.sort_by{|word,count| [-count,word]}.to_a
 
 File.open("output.txt","w") do |output|
-  for i in 0..19
+  for i in 0..29
     output.puts wordsArr[i][0]
   end
 end
@@ -51,10 +51,15 @@ IO.popen('./mydistance jawikisep.bin').each do |line|
   # puts line
 end
 
-
-print "RANK\tORIGINAL\tFREQUENCY\tRESULT\n"
-for i in 0..19
-  puts "#{i+1}\t#{wordsArr[i][0]}\t\t#{wordsArr[i][1]}\t\t#{distance[i]}"
+puts "ひらがな一文字は省いています"
+print "RANK\tTIMES\tWORD\t\tRESULT\n"
+for i in 0..29
+  #4文字以上だと出力したときにずれてしまう．bytesでとりだして上位ビットが1であるかどうかを見る．
+  if wordsArr[i][0].length < 4 || wordsArr[i][0] =~ /^[0-9A-Za-z]+$/ then
+    puts "#{i+1}\t#{wordsArr[i][1]}\t#{wordsArr[i][0]}\t\t#{distance[i]}"
+  else
+    puts "#{i+1}\t#{wordsArr[i][1]}\t#{wordsArr[i][0]}\t#{distance[i]}"
+  end
 end
 
 
