@@ -1,0 +1,313 @@
+HTTP/1.1 200 OK
+Date: Thu, 11 Dec 2014 08:30:20 GMT
+Server: Apache
+X-Powered-By: PHP/5.2.17
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Pragma: no-cache
+Content-Length: 7741
+Connection: close
+Content-Type: text/html; charset=UTF-8
+
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>静岡大学 情報学部</title>
+  <meta name="keywords" content="静岡大学,静大,大学,大学院,静岡,浜松,情報学部" />
+  <meta name="description" content="静岡大学 情報学部, 大学院情報学研究科 | 静岡県浜松市にある静岡大学 情報学部のホームページです。" />
+  <meta name="copyright" content="SHIZUOKA UNIVERSITY Faculty of Informatics" />
+  <meta name="robots" content="index, follow" />
+  
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <link rel="stylesheet" href="css/style.php?v=1421211347&amp;cat=" type="text/css" media="all" />
+  <link rel="stylesheet" href="css/font/fontsize1.css" type="text/css" media="all" title="changestyle" />
+  <link rel="alternate" type="application/rss+xml" href="http://www.inf.shizuoka.ac.jp/rss2.xml" title="静岡大学 情報学部RSS2.0" />
+
+  <script src="js/jquery.js" type="text/javascript"></script>
+  <script src="js/sui.js?v=1421211347" type="text/javascript"></script>
+</head>
+<body>
+<!-- container start -->
+<div id="container">
+  <!-- header start -->
+  <div id="header" class="clearfix">
+    <div id="logo">
+      <a href="http://www.inf.shizuoka.ac.jp/"><img src="http://www.inf.shizuoka.ac.jp/images/common/header/logo-a.gif" alt="静岡大学 情報学部" /></a>
+    </div>
+    <div id="naviHeadWrap">
+      <div id="naviHead">
+        <ul>
+          <li class="n01"><a href="http://www.inf.shizuoka.ac.jp/en/index.html">ENGLISH</a></li>
+          <li class="n02"><a href="http://www.inf.shizuoka.ac.jp/objects/index.html">サイトマップ</a></li>
+          <li class="n03"><a href="http://www.inf.shizuoka.ac.jp/about/access.html">交通アクセス</a></li>
+          <li class="n04"><a href="http://www.inf.shizuoka.ac.jp/info/inquiry.html">お問合せ</a></li>
+        </ul>
+      </div>
+      <div class="fontsize">
+        <ul>
+        <li><a href="#" rel="css/font/fontsize1.css" id="fontsel1" class="styleswitch fontsize1">小</a></li>
+        <li><a href="#" rel="css/font/fontsize2.css" id="fontsel2" class="styleswitch fontsize2">中</a></li>
+        <li><a href="#" rel="css/font/fontsize3.css" id="fontsel3" class="styleswitch fontsize3">大</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- header end -->
+
+  <!-- objects navigation start -->
+  <div id="tgNavigation" class="clearfix">
+    <div id="naviObjects">
+      <ul>
+        <li class="n01"><a href="http://www.inf.shizuoka.ac.jp/objects/examinee.html">受験生,保護者の方へ</a></li>
+        <li class="n02"><a href="http://www.inf.shizuoka.ac.jp/objects/graduate.html">卒業生の方へ</a></li>
+        <li class="n03"><a href="http://www.inf.shizuoka.ac.jp/objects/society.html">社会人,一般,企業の方へ</a></li>
+      </ul>
+    </div>
+    <div id="searchBox">
+            <form action="http://www.google.com/cse" id="cse-search-box" style="margin:0;padding:0;">
+            <div style="">
+            <input type="text" name="q" size="20" value="" style="margin:0;width:140px;" />
+              <input type="hidden" name="cx" value="008418122266638236939:vlnkr9uvg6o" />
+              <input type="hidden" name="ie" value="UTF-8" />
+              <input type="submit" name="submit" value="検索" class="btnSearch" />
+            </div>
+          </form>
+          <script type="text/javascript" src="http://www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=ja"></script>
+    </div>
+  </div>
+  <!-- objects navigation end -->
+
+  <!-- global navigation start -->
+  <div id="glNavigation">
+    <ul>
+      <li class="n01_On"><a href="http://www.inf.shizuoka.ac.jp/">ホーム</a></li>
+      <li class="n02"><a href="http://www.inf.shizuoka.ac.jp/about/">情報学部案内</a></li>
+      <li class="n03"><a href="http://www.inf.shizuoka.ac.jp/courses/">学科・カリキュラム</a></li>
+      <li class="n04"><a href="http://www.inf.shizuoka.ac.jp/graduate/">大学院</a></li>
+      <li class="n05"><a href="http://www.inf.shizuoka.ac.jp/admissions/">入試情報</a></li>
+      <li class="n06"><a href="http://www.inf.shizuoka.ac.jp/career/">就職・キャリア</a></li>
+      <li class="n07"><a href="http://www.inf.shizuoka.ac.jp/campuslife/">キャンパスライフ</a></li>
+<!--      <li class="n08"><a href="http://www.inf.shizuoka.ac.jp/about/alliances.html">地域連携推進室</a></li>-->
+    </ul>
+  </div>
+  <!-- global navigation start -->
+  
+  <!-- mainimage strat  -->
+  <div id="mainImg">
+    <img src="http://www.inf.shizuoka.ac.jp/images//p-main.jpg" alt="" />
+  </div>
+  <!-- mainimage end  -->
+  
+  <!-- panNavigation strat  -->
+  <div id="pkNavigation">
+    <a href="http://www.inf.shizuoka.ac.jp/">HOME</a>    </div>
+  <!-- panNavigation end  -->
+  
+  <!-- wrapper strat  -->
+  <div id="wrapper" class="clearfix">
+    
+<div id="content">
+<!-- *** content ************************************************  -->
+<h2 class="home"><img src="images/home/news.gif" alt="新着情報" /><a href="news/index.html?y=2015"><img src="images/home/news-history.gif" alt="新着情報履歴" /></a><a href="rss2.xml"><img src="images/home/rss.gif" alt="rss" /></a></h2>
+
+<dl class="infoList">
+  <dt >
+    2014.12.22<br /><span class="NEWS">NEWS</span>
+  </dt>
+  <dd >
+              <span>情報学研究科の教員（理工系情報学分野　准教授２名）を公募しています。</span>
+        <br /><span style="word-break: break-all;color:#333">静岡大学大学院情報学研究科では情報科学分野の教員(准教授)２名を公募しています。応募期限は2015年（平成27年）3月31日です。専門分野は情報科学です。担当授業など詳しい内容は<a href="data/news/20141222_id564/201412041800.pdf">公募要項</a>をご覧ください。</span>
+    <div class="clear" style="height:1px;font-size:1px;line-height:1px;"></div>
+  </dd>
+  <dt class='line02'>
+    2014.12.19<br /><span class="NEWS">NEWS</span>
+  </dt>
+  <dd class='line02'>
+          <a href=""><img src="data/news/20141219_id563//AnimeInUSA.jpg" width="60" height="87" alt="news" class="imgWrapRight" /></a>
+              <span>アニメ in USA ―日本アニメのローカライゼーション―</span>
+        <br /><span style="word-break: break-all;color:#333">12月19日 (金) 16:30から情21教室にてアジアブリッジプログラム招聘研究員のAlexandra Roedder博士を講師に迎え「アメリカにおける日本のアニメ」を主題とした講演会を行います。参加無料・申込不要です。詳しくは<a href="data/news/20141219_id563/AnimeInUSA.pdf">こちら</a>をご覧ください。</span>
+    <div class="clear" style="height:1px;font-size:1px;line-height:1px;"></div>
+  </dd>
+  <dt >
+    2014.11.29<br /><span class="EVENT">EVENT</span>
+  </dt>
+  <dd >
+          <a href="media/event.html#20141129id567"><img src="data/media/20141129_id567//141129_work.jpg" width="60" height="34" alt="news" class="imgWrapRight" /></a>
+              <a href="media/event.html#20141129id567" style="word-break: break-all;">第12回情報学ワークショップ</a>
+        <br /><span style="word-break: break-all;color:#333">11月29日(土)に静岡大学情報学部にて、第12回情報学ワークショップが開催されました。ワークショップは東海地区を中心とする情報技術に関するもので、毎年東海地区の大学で開催されてきましたが、今年は静岡大学で開催されました。</span>
+    <div class="clear" style="height:1px;font-size:1px;line-height:1px;"></div>
+  </dd>
+  <dt class='line02'>
+    2014.11.27<br /><span class="NEWS">NEWS</span>
+  </dt>
+  <dd class='line02'>
+          <a href="news/20141108-ParentsMeeting"><img src="data/news/20141127_id555//20141108-4.jpg" width="60" height="45" alt="news" class="imgWrapRight" /></a>
+              <a href="news/20141108-ParentsMeeting" style="word-break: break-all;">2014年度秋季保護者懇談会</a>
+        <br /><span style="word-break: break-all;color:#333">2014年11月8日(土) 静岡大学浜松キャンパスにて情報学部秋季保護者懇談会が開催されました。</span>
+    <div class="clear" style="height:1px;font-size:1px;line-height:1px;"></div>
+  </dd>
+  <dt >
+    2014.11.26<br /><span class="NEWS">NEWS</span>
+  </dt>
+  <dd >
+              <a href="http://pc.watch.impress.co.jp/docs/column/kyokai/20141119_676462.html" style="word-break: break-all;">狩野芳伸准教授の人工知能に関する研究成果がインプレス社PC Watchの記事で紹介されました</a>
+        <br /><span style="word-break: break-all;color:#333">狩野准教授は、人工知能による大学入試の自動解答を目指す「ロボットは東大に入れるか」プロジェクトにおいて社会科の自動解答を研究しています。代ゼミ模試の自動解答にチャレンジするタスクの成果発表会が今月行われ、記事では発表会の様子が講演者ごとに詳細に紹介されました。</span>
+    <div class="clear" style="height:1px;font-size:1px;line-height:1px;"></div>
+  </dd>
+  <dt class='line02'>
+    2014.11.13<br /><span class="EVENT">EVENT</span>
+  </dt>
+  <dd class='line02'>
+          <a href="media/event.html#20141113id565"><img src="data/media/20141113_id565//141113_bizcon.jpg" width="60" height="34" alt="news" class="imgWrapRight" /></a>
+              <a href="media/event.html#20141113id565" style="word-break: break-all;">湯浦研究室主催第4回ビジネスコンテスト</a>
+        <br /><span style="word-break: break-all;color:#333">11月13日(木)に湯浦研究室主催第4回ビジネスコンテストが開催されました。学生たちの手によって企画され、様々なビジネスプランが発表されました。今年は津田塾大学からの参加チームもありました。</span>
+    <div class="clear" style="height:1px;font-size:1px;line-height:1px;"></div>
+  </dd>
+  <dt >
+    2014.11.08<br /><span class="EVENT">EVENT</span>
+  </dt>
+  <dd >
+          <a href="media/event.html#20141108id561"><img src="data/media/20141108_id561//141108_shizudaisai_techfes.jpg" width="60" height="34" alt="news" class="imgWrapRight" /></a>
+              <a href="media/event.html#20141108id561" style="word-break: break-all;">第15回静大祭＆第19回テクノフェスタin浜松</a>
+        <br /><span style="word-break: break-all;color:#333">11月08、09日の二日間に渡り、第15回静大祭in浜松・第19回テクノフェスタin浜松が開催されました。学生による模擬店、ライブパフォーマンス、研究発表など様々な催し物が行われ、二日目は天候に恵まれなかったのにもかかわらず、両日とも多くの来場者で賑わっていました。</span>
+    <div class="clear" style="height:1px;font-size:1px;line-height:1px;"></div>
+  </dd>
+  <dt class='line02'>
+    2014.11.08<br /><span class="EVENT">EVENT</span>
+  </dt>
+  <dd class='line02'>
+          <a href="media/event.html#20141108id558"><img src="data/media/20141108_id558//141108_Hogosyakongannkai.jpg" width="60" height="34" alt="news" class="imgWrapRight" /></a>
+              <a href="media/event.html#20141108id558" style="word-break: break-all;">平成26年度保護者懇談会</a>
+        <br /><span style="word-break: break-all;color:#333">11月8日(土)に保護者懇談会が開催されました。保護者懇談会発足当時の責任者であった藤井先生に保護者懇談会の意義と保護者の方へのメッセージを伺いました。</span>
+    <div class="clear" style="height:1px;font-size:1px;line-height:1px;"></div>
+  </dd>
+  <dt >
+    2014.11.08<br /><span class="EVENT">EVENT</span>
+  </dt>
+  <dd >
+          <a href="media/event.html#20141108id557"><img src="data/media/20141108_id557//141108_homecomingday.jpg" width="60" height="34" alt="news" class="imgWrapRight" /></a>
+              <a href="media/event.html#20141108id557" style="word-break: break-all;">平成26年度第5回ホームカミングデー</a>
+        <br /><span style="word-break: break-all;color:#333">11月8日(土)に第5回ホームカミングデーが開催されました。たくさんの卒業生や退職された先生方がご参加され、旧友・恩師との食事や会話を楽しみました。</span>
+    <div class="clear" style="height:1px;font-size:1px;line-height:1px;"></div>
+  </dd>
+  <dt class='line02'>
+    2014.10.30<br /><span class="NEWS">NEWS</span>
+  </dt>
+  <dd class='line02'>
+          <a href=""><img src="data/news/20141030_id550//shizuoka-h.JPG" width="60" height="45" alt="news" class="imgWrapRight" /></a>
+              <span>キャンパス見学</span>
+        <br /><span style="word-break: break-all;color:#333">2014年10月28日静岡県立静岡高等学校の1年生がキャンパス見学にやって来ました。情報学部でどのような研究が行われているかを実際に見聞きしてもらい、大学の雰囲気を味わってもらいました。</span>
+    <div class="clear" style="height:1px;font-size:1px;line-height:1px;"></div>
+  </dd>
+</dl>
+<br />
+<br />
+
+
+<!-- *** content ************************************************  -->
+</div>
+
+<!-- sidebar strat  -->
+<div id="sidebar">
+  <ul class="sBanners">
+    <li class="boc"><a href="media/index.html" class="Tn01"><img src="images/common/banners/sidebar-banner01.jpg" alt="見てみよう！知ろう！学部・イベント・サークル動画を公開中" /></a></li>
+    <!--li class="boc"><a href="courses/timetable.html" class="Tn02"><img src="images/common/banners/sidebar-banner02.jpg" alt="情報学部 時間割・シラバス" /></a></li-->
+    <li class="boc"><a href="about/labs.html" class="Tn03"><img src="images/common/banners/sidebar-banner03.jpg" alt="情報学部 教員紹介" /></a></li>
+  </ul>
+    <a href="http://www.youtube.com/user/JRAinfwandering?feature=watch" Target="_blank"><img src="images/common/banners/buraritabi_banner.jpg" alt="情報学部ぶらり旅映像コンテンツ" /></a>
+    <a href="https://www.facebook.com/ShizuokaUnivJohogakubuDosokai" Target="_blank"><img src="images/common/banners/dousoukai_fb.jpg" alt="情報学研究科・情報学部同窓会facebook" /></a>
+
+  <div class="pjlist">
+    <img src="images/home/projectlist.gif" alt="採択プロジェクト関連" />
+    <a href="http://architect.inf.shizuoka.ac.jp/hept/"><img src="images/home/HEPT.png" alt="組み込みソフトウェア技術コンソーシアム」(HEPT) " /></a>
+    <a href="projects/index.html"><img src="images/home/ProjectList.gif" alt="採択プロジェクト一覧" /></a>
+<!-- 20141106 delete
+    <a href="http://www.hamanako.jp/manabinaoshi/index.html"><img src="images/projects/banners/practical-informatics.jpg" alt="地域が求める実践的情報学" /></a>
+    <a href="http://www.inf.shizuoka.ac.jp/projects/ggp/"><img src="images/projects/banners/support-program.jpg" alt="大学院教育改革支援プログラム" /></a>
+    <a href="http://gp.inf.shizuoka.ac.jp/"><img src="images/projects/banners/gendai.jpg" alt="現代GP:自分探しのキャリア形成" /></a>
+    <a href="http://www.mext.go.jp/a_menu/koutou/it/h18.htm"><img src="images/projects/banners/ocean.png" alt="先導的ITスペシャリスト育成推進プログラム" /></a>
+    <a href="http://www.gsest.shizuoka.ac.jp/coe/index.html"><img src="images/projects/banners/21coe.jpg" alt="21世紀COEプログラム:ナノビジョンサイエンスの拠点創成" /></a>
+    <p><a href="projects/index.html">&gt; 採択プロジェクト一覧</a></p>
+-->
+  </div>
+
+  <img src="images/home/facilitylist.gif" alt="学内施設・関係施設" class="ma5" />
+  <ul class="facilitylist">
+    <li><a href="http://www.shizuoka.ac.jp/" target="_blank">静岡大学</a></li>
+    <li><a href="http://hama.shizuoka.ac.jp/" target="_blank">浜松キャンパスWeb</a></li>
+    <li><a href="http://gsst.shizuoka.ac.jp/" target="_blank">創造科学技術大学院</a></li>
+    <li><a href="http://www.oisc.shizuoka.ac.jp/" target="_blank">イノベーション社会連携推進機構</a></li>
+    <li><a href="http://www.nvrc.rie.shizuoka.ac.jp/takayanagi/" target="_blank">高柳記念未来技術館</a></li>
+    <li><a href="http://www.rie.shizuoka.ac.jp/" target="_blank">電子工学研究所</a></li>
+    <li><a href="http://www.cii.shizuoka.ac.jp/" target="_blank">情報基盤センター</a></li>
+    <li><a href="http://www.hedc.shizuoka.ac.jp/" target="_blank">大学教育センター</a></li>
+    <li><a href="http://www.lib.shizuoka.ac.jp/" target="_blank">附属図書館</a></li>
+    <li><a href="http://www.ipc.shizuoka.ac.jp/~hokekan/index.html" target="_blank">保健センター</a></li>
+    <li><a href="http://www.lc.shizuoka.ac.jp/" target="_blank">生涯学習教育センター</a></li>
+    <li><a href="http://www.shizuoka.ac.jp/c_museum/" target="_blank">キャンパスミュージアム</a></li>
+    <li><a href="http://www.icsu.shizuoka.ac.jp/index.html" target="_blank">国際交流センター</a></li>
+    <li><a href="http://www.shizuokaunivcoop.jp/" target="_blank">静岡大学生協</a></li>
+    <li><a href="http://sanaru.org/" target="_blank">浜松工業会</a></li>
+  </ul>
+  <img src="images/home/inner.gif" alt="在学生・教員向け" class="ma5" />
+  <ul class="facilitylist">
+    <li><a href="https://class.inf.shizuoka.ac.jp/" target="_blank">IT's class</a></li>
+    <li><a href="https://gakujo.shizuoka.ac.jp/" target="_blank">学務情報システム</a></li>
+  </ul>
+  <img src="images/home/employment.jpg" alt="公募情報" class="ma5" />
+  <ul class="facilitylist">
+    <li><a href="info/employment.html">教員採用情報</a></li>
+    <li><a href="info/employment-OfficeStaff.html">職員採用情報</a></li>
+  </ul>
+  <br />
+<a href="http://www.inf.shizuoka.ac.jp/about/qa.html"><img src="images/common/btn/qa-inf.gif" alt="情報学部Q&amp;A"  /></a><a href="http://www.inf.shizuoka.ac.jp/admissions/qa.html"><img src="images/common/btn/qa-adm.gif" alt="入試Q&amp;A"  /></a>
+<a href="http://www.inf.shizuoka.ac.jp/info/inquiry.html"><img src="images/common/btn/inquiry.gif" alt="お問い合わせ窓口一覧" class="ma10" /></a></div>
+<!-- sidebar end  -->  </div>
+  <!-- wrapper end  -->
+
+  <!-- extra start  -->
+  <div id="extra">
+    <div id="extraLeft">
+      <ul>
+        <li><a href="http://www.inf.shizuoka.ac.jp/info/privacypolicy.html"><img src="http://www.inf.shizuoka.ac.jp/images/common/navi/extra-navi01.gif" alt="個人情報保護方針" /></a></li>
+        <li><a href="http://www.inf.shizuoka.ac.jp/info/siteinfo.html"><img src="http://www.inf.shizuoka.ac.jp/images/common/navi/extra-navi02.gif" alt="このサイトについて" /></a></li>
+        <li><a href="http://www.inf.shizuoka.ac.jp/info/link.html"><img src="http://www.inf.shizuoka.ac.jp/images/common/navi/extra-navi03.gif" alt="静岡大学関連リンク集" /></a></li>
+      </ul>
+    </div>
+    <div id="extraRight">
+      <a href="#container"><img src="http://www.inf.shizuoka.ac.jp/images/common/btn/pagetop.gif" alt="ページの先頭へ" /></a>
+    </div>
+  </div>
+  <!-- extra end  -->
+
+  <!-- footer start  -->
+  <div id="footer" class="clearfix">
+    <div id="footerLeft">
+      <address>〒432-8011  静岡県浜松市中区城北3-5-1</address>
+    </div>
+    <div id="footerRight">
+    <p>Copyright(C) Shizuoka University. All rights Reserved.</p>
+    </div>
+  </div>
+  <!-- footer end  -->
+
+</div>
+<!-- container end -->
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl."
+ : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/scri"+"pt%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-7070476-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+</body>
+</html>

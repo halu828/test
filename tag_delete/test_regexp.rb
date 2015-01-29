@@ -13,4 +13,7 @@ str = File.read("tmphttp.txt", :encoding => Encoding::UTF_8)
 # subは最初にマッチした部分だけを置き換える．gsubはマッチする部分全てを置き換える．
 # "<"が出てくるまでを削除
 #puts "#{str.sub(/.*</, "")}"
-puts "#{str.gsub(/<("[^"]*"|'[^']*'|[^'">])*>/, "")}"
+
+File.open("tag_delete.txt","w") do |output|
+  puts "#{str.gsub(/<("[^"]*"|'[^']*'|[^'">])*>/, "")}"
+end
