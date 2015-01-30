@@ -1,0 +1,421 @@
+GET / HTTP/1.1
+Host: nghttp2.org
+Connection: Upgrade, HTTP2-Settings
+Upgrade: h2c-14
+HTTP2-Settings: AAMAAABkAAQAAP__
+Accept: */*
+User-Agent: myclient
+
+HTTP/1.1 101 Switching Protocols
+Connection: Upgrade
+Upgrade: h2c-14
+
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">nghttp2.org</a></h1>
+  
+    <h2>HTTP/2 C library and tools</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site://nghttp2.org" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/documentation">Documentation</a></li>
+  <li><a href="/httpbin">Httpbin</a></li>
+  <li><a href="https://github.com/tatsuhiro-t/nghttp2/releases">Releases</a></li>
+  <li><a href="https://github.com/tatsuhiro-t/nghttp2">Source Code</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/01/25/nghttp2-v0-7-3/">Nghttp2 v0.7.3</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-01-25T23:09:35+09:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>11:09 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>We released nghttp2
+<a href="https://github.com/tatsuhiro-t/nghttp2/releases/tag/v0.7.3">v0.7.3</a>.
+v0.7.2 was replaced with v0.7.3 shortly after its release because it
+contains apparent bugs.  The v0.7.3 release still uses h2-14
+identifier in library code.</p>
+
+<p>Since v0.7.3 is quick bug fix release, we summarize changes made in
+both v0.7.3 and v0.7.2.  We added <code>nghttp2_submit_shutdown_notice()</code>
+API function.  It is intended to be used by server and tells client
+that server has started graceful shutdown by sending GOAWAY with (1 &lt;&lt;
+31) - 1 as last-stream-ID.  We also added
+<code>nghttp2_session_get_last_proc_stream_id()</code>, which returns the largest
+stream ID the library called <code>nghttp2_on_frame_recv_callback()</code> for
+and can be passed as last-stream-id paramter to
+<code>nghttp2_submit_goaway()</code> if application has no more specific
+knowledge about last-stream-ID.</p>
+
+<p>nghttpx has several options added. They are mostly optimzation
+purpose.  We tightened up HTTP header field validation in nghttpx,
+particularly for Content-Length header field.</p>
+
+<p>To upgrade ease of use, options which take SIZE as metavar can use
+units (K, M and G, powers of 1024) along with leading digits.  For
+example, now we can specify <code>--read-rate=4K</code>, which is identical to
+<code>--read-rate=4096</code>.</p>
+
+<p>Since nghttpx has many features, we started to add integration testing
+framework using Go programming language and its <code>go test</code> feature.  It
+resides in integration-tests directory.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/01/11/nghttp2-v0-7-1/">Nghttp2 v0.7.1</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-01-11T19:16:27+09:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:16 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>We just released nghttp2
+<a href="https://github.com/tatsuhiro-t/nghttp2/releases/tag/v0.7.1">v0.7.1</a>.
+The library documentation is still based on h2-14.  nghttp, nghttpd,
+nghttpx and h2load additionally advertise h2-16 ALPN token to interop
+with the implementations which require h2-16.</p>
+
+<p>This release fixes GOAWAY handling to conform to the HTTP/2
+specification.  TLS read/write error in nghttp, nghttpd, nghttpx and
+h2load has been fixed.  We enabled TLS session ticket with automatic
+key rotation in nghttpx.  We also add an option to specify key
+parameter from file (but without automatic rotation) to nghttpx to
+share same keys with multiple instances.  For documentation wise, man
+pages are now now generated using Sphinx.  We don&rsquo;t use help2man
+anymore.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/01/07/nghttp2-v0-7-0/">Nghttp2 v0.7.0</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-01-07T01:58:31+09:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>1:58 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>We just released nghttp2
+<a href="https://github.com/tatsuhiro-t/nghttp2/releases/tag/v0.7.0">v0.7.0</a>.
+The library documentation is still based on h2-14.  nghttp, nghttpd,
+nghttpx and h2load additionally advertise h2-16 ALPN token to interop
+with the implementations which require h2-16.</p>
+
+<p>We added some new APIs.  The custom memory allocator <code>nghttp2_mem</code> was
+introduced in this release.  We have also added several initialization
+fucntions to use this allocator.  The new
+<code>nghttp2_session_set_next_stream_id()</code> and
+<code>nghttp2_session_get_next_stream_id()</code> functions have been added.
+<code>nghttp2_session_set_next_stream_id()</code> sets next outgoing stream ID,
+while <code>nghttp2_session_get_next_stream_id()</code> returns the next outgoing
+stream ID.  These fucntions are useful when streams are used as
+anchors in dependency tree and leave them idle.</p>
+
+<p>Now nghttp, nghttpd, nghttpx and h2load applications use libev instead
+of libevent.  Libevent is still required to build source files under
+examples directory.</p>
+
+<p>nghttp has supported the feature to reading files from stdin to upload
+to a server for quite some time, but it only supported files and did
+not work with non-file (e.g., <code>echo -n "foo" | nghttp -d-
+http://nghttp2.org/</code>).  Kazuho Oku contributed the patch to fix this
+issue.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/11/30/nghttp2-v0-6-7/">Nghttp2 v0.6.7</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-11-30T23:24:49+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>11:24 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>nghttp2
+<a href="https://github.com/tatsuhiro-t/nghttp2/releases/tag/v0.6.7">v0.6.7</a>
+has been released.  We still advertises h2-14 support in ALPN, but we
+have merged h2-16 features in this release.  They are binary
+compatible, so we use h2-14, which is the interop draft version.</p>
+
+<p>For library code, there are several changes.  Due to the change made
+into h2-16, PRIORITY frame is now allowed in any state state.  Also we
+refined GOAWAY handling by utilizing last-stream-id extensively.
+<code>nghttp2_session_want_read()</code> and <code>nghttp2_session_want_write()</code>
+reflect this change so as to make graceful shutdown easier.</p>
+
+<p>nghttpx got some enhancement.  It now has the feature to configure
+access logging format.  In addition to the usual combined log fields,
+we have added additional custom fields.  Some of the new custom fields
+were contributed by Lucas Pardue.  The cipher suite requirement in
+nghttpx was now removed and it only requires TLSv1.2 for HTTP/2
+connection due to the changes in h2-16.  nghttpx also disabled spdy/3
+and spdy/2 by default, since they are now being deprecated world wide.</p>
+
+<p>nghttp got some interesting options.  The most notable option is <code>-r</code>.
+If it is given with file name, nghttp saves HTTP transactions in
+well-known HAR format.  It is expected to be used with <code>-a</code> option.</p>
+
+<p>h2load finally got ALPN support.</p>
+
+<p>For python bindings, client implementation was contributed by Kyle
+Schomp.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/11/29/test-your-http-slash-2-server-with-nghttp-client/">Test Your HTTP/2 Server With Nghttp Client</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-11-29T21:43:56+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>29</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>9:43 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>nghttp command-line client has some useful options to test your HTTP/2
+server implementation.  This blog post introduces such command-line
+options.</p>
+
+<p>We recommend to enable <code>-nv</code> options for nghttp to see what is
+happening on HTTP/2 framing layer.  It is very good source of
+information for debugging.</p>
+
+<h2>Flow control</h2>
+
+<p>To test whether server enfoces flow control window size advertised by
+client, use <code>-W</code> and/or <code>-w</code> option.  <code>-W</code> option specifies connection
+level flow control window size.  It specifies the number of bits
+rather than the size directly, so if you specify <code>-W14</code>, the window
+size becomes 16383 (= 2 ** 14 - 1).  Similarly, <code>-w</code> option specifies
+stream level flow control window size.  Since HTTP/2 does not have
+dedicated way to reduce connection level window size, we achieve this
+by not sending WINDOW_UPDATE frame to server to keep the available
+window size less than or equal to the specified size.  Therefore, to
+test connection window size less than default value which is 65535,
+nghttp should request resource more than 65535 bytes, otherwise <code>-W</code>
+has no effect.  If nghttp found any errors related to flow control, it
+emits FLOW_CONTROL_ERROR and exists nonzero.</p>
+
+<h2>Header compression and multiplexing</h2>
+
+<p>HTTP/2 uses header compression technique called HPACK.  We know that,
+by iterop experience, single request/response is not enough to test
+HPACK.  The problem is more likely happening after several
+request/response transactions.  This is because HPACK uses stateful
+compression mechanism and it requires both server and client share
+same compression context.  If they are out of sync, problem appears.
+So testing HPACK must be done with multiple requests and responses.
+This means that it also exercises multiplexing.</p>
+
+<p>For this purpose, <code>-a</code> option is handy.  If <code>-a</code> is used, nghttp
+parses downloaded HTML file and finds statically linked resources,
+such as CSS, Javascript and images.  Then it requests them which are
+multiplexed in the same HTTP/2 session (same connection).</p>
+
+<p>If nghttp client found an error while decoding header block, it emits
+COMPRESSION_ERROR and exists nonzero.</p>
+
+<h2>Uploading</h2>
+
+<p>To upload the content of a file, use <code>-d</code> option.  By default, nghttp
+adds <code>content-length</code> header field when uploading data.  Specifying
+<code>--no-content-length</code> option will omit <code>content-length</code> header field
+from request header.</p>
+
+<h2>Padding</h2>
+
+<p><code>-b</code> option adds given number of bytes to HEADERS or DATA frame as
+padding.  This will verify that whether server can correctly parse
+frames by taking into account the existence of padding bytes.</p>
+
+<h2>CONTINUATION frame</h2>
+
+<p>Using <code>--continuation</code> will send very large headers to server using
+CONTINUATION frame.  The total header block size (HEADERS +
+CONTINUATION) is around 18K bytes.</p>
+
+<h2>Priority</h2>
+
+<p>Use <code>-a</code> option and see that how server reacts to priority hints given
+from client.  If <code>-a</code> is used, nghttp parses downloaded HTML file and
+finds statically linked resources, such as CSS, Javascript and images.
+Then it requests them which are multiplexed in the same HTTP/2 session
+(same connection).  By default, nghttp prioritizes resources as
+follows:</p>
+
+<ol>
+<li>HTML (highest)</li>
+<li>CSS (high)</li>
+<li>Javascripts (JS) (middle)</li>
+<li>images (low)</li>
+</ol>
+
+
+<p>Then it creates dependency tree and issues requests with this
+dependency hints.  To verify how server reacts to this hints, <code>-r</code>
+option is very useful.  It saves the HTTP transactions to given file
+as HAR format.  Then you can use
+<a href="http://www.softwareishard.com/har/viewer/">HAR file viewer</a> to see
+the load times.  To compare the result without prority, issue the same
+request with <code>--no-dep</code> option, which entirely omits priority hints.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/11/16/visualization-of-http-slash-2-priority/">Visualization of HTTP/2 Priority</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-11-16T18:24:14+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>6:24 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I blogged about
+<a href="/blog/2014/04/27/how-dependency-based-prioritization-works/">how HTTP/2 dependency based prioritization works</a>
+in several month ago.  The prioritization works fine even at that time, but there is one
+problem.  It is a bit hard to track down and check that dependency is actually
+working from nghttp client logging.  On the other hand, we also want a
+tool to measure how well server reacts to the priority hints client
+offers.</p>
+
+<p>As a first step to tackle these problem, I added a feature to nghttp
+client program to output HTTP/2 transaction in well-known
+<a href="https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/HAR/Overview.html">HAR</a>
+format.  We can use existing HAR file viewer to visualize the
+transactions and easily see how well server uses/obeys priority.</p>
+
+<p>Let&rsquo;s see how dependency information affects the resource transfer.
+Currently, nghttp prioritizes resources in 4 categories:</p>
+
+<ol>
+<li>HTML (highest)</li>
+<li>CSS (high)</li>
+<li>Javascripts (

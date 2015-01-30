@@ -24,10 +24,10 @@ end
 # 以下，頻出回数を求めていく
 words = Hash.new(0)
 
-Find.find("wakati.txt") do |path|
-  if /\.txt/i =~ File.extname(path)
-    File.open(path,"r") do |file|
-      file.read.downcase.scan(/\p{Letter}+/) do |word|
+Find.find("wakati.txt") do |find|
+  if /\.txt/i =~ File.extname(find)
+    File.open(find, "r") do |readfile|
+      readfile.read.downcase.scan(/\p{Letter}+/) do |word|
         words[word] += 1
       end
     end
