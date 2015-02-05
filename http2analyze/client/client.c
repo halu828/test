@@ -2,14 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
-#include <netinet/in.h>
-#include <sys/time.h>
-#include <arpa/inet.h>
-#include <errno.h>
-#include <err.h>
 
 #define SIZE 50000
 
@@ -34,14 +28,19 @@ int main(int argc, char *argv[]) {
   struct sockaddr_in serverHost;
   struct hostent *ServerInfo;
   int serverSocket = 0;
-  int recvSize;
-  char buf[SIZE] = "GET / HTTP/1.1\r\nHost: nghttp2.org\r\nConnection: Upgrade, HTTP2-Settings\r\nUpgrade: h2c-14\r\nHTTP2-Settings: AAMAAABkAAQAAP__\r\nAccept: */*\r\nUser-Agent: myclient\r\n\r\n";
-  // char buf[SIZE] = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n\r\n";
+  int port = 80;
+  char ipaddr[15] = "nghttp2.org";
+  // char buf[SIZE] = "GET / HTTP/1.1\r\nHost: nghttp2.org\r\nConnection: Upgrade, HTTP2-Settings\r\nUpgrade: h2c-14\r\nHTTP2-Settings: AAMAAABkAAQAAP__\r\nAccept: */*\r\nUser-Agent: myclient\r\n\r\n";
+  char buf[SIZE] = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n\r\n";
 
-  printf("%s", buf);
+  if (argc >= 2) strcpy(ipaddr, argv[1]);
+  if (argc == 3) port = atoi(argv[2]);
+  printf("ipaddr:\t%s\nport:\t%d\n\n", ipaddr, port);
 
-  /* hostNameからwebサーバのIPアドレスを求める */
-  if ((ServerInfo = gethostbyname("nghttp2.org")) == NULL) {
+  printf("[request]\n%s", buf);
+
+  /* ホストからIPアドレスを求める */
+  if ((ServerInfo = gethostbyname(ipaddr)) == NULL) {
     fprintf(stderr, "Failed to find host!\n");
     exit(1);
   }
@@ -53,13 +52,12 @@ int main(int argc, char *argv[]) {
   }
 
   serverHost.sin_family = AF_INET;
-  serverHost.sin_port = htons(80); /* webサーバならば通常は80を代入(well-known port) */
+  serverHost.sin_port = htons(port); /* webサーバならば通常は80を代入(well-known port) */
   memcpy((char *)&serverHost.sin_addr, (char *)ServerInfo->h_addr_list[0], ServerInfo->h_length);
 
   /* webサーバと接続 */
   if (connect(serverSocket, (struct sockaddr *)&serverHost, sizeof(serverHost)) == -1) {
     fprintf(stderr, "Failed to connect with the web server!\n");
-    fprintf(stderr, "%s\n", strerror(errno));
     exit(1);
   }
 
@@ -69,11 +67,11 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
 
-
+  printf("[responce]\n");
   /* サーバからレスポンスをもらう */
   while (1) {
     memset(buf, '\0', sizeof(buf));
-    if ((recvSize = recv(serverSocket, buf, sizeof(buf), 0)) <= 0) {
+    if (recv(serverSocket, buf, sizeof(buf), 0) <= 0) {
       fprintf(stderr, "--\nrecvSizeが0以下\n");
       break;
     }

@@ -1,3 +1,4 @@
+[request]
 GET / HTTP/1.1
 Host: nghttp2.org
 Connection: Upgrade, HTTP2-Settings
@@ -6,11 +7,12 @@ HTTP2-Settings: AAMAAABkAAQAAP__
 Accept: */*
 User-Agent: myclient
 
+[responce]
 HTTP/1.1 101 Switching Protocols
 Connection: Upgrade
 Upgrade: h2c-14
 
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+c="/javascripts/octopress.js" type="text/javascript"></script>
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
@@ -298,124 +300,4 @@ information for debugging.</p>
 client, use <code>-W</code> and/or <code>-w</code> option.  <code>-W</code> option specifies connection
 level flow control window size.  It specifies the number of bits
 rather than the size directly, so if you specify <code>-W14</code>, the window
-size becomes 16383 (= 2 ** 14 - 1).  Similarly, <code>-w</code> option specifies
-stream level flow control window size.  Since HTTP/2 does not have
-dedicated way to reduce connection level window size, we achieve this
-by not sending WINDOW_UPDATE frame to server to keep the available
-window size less than or equal to the specified size.  Therefore, to
-test connection window size less than default value which is 65535,
-nghttp should request resource more than 65535 bytes, otherwise <code>-W</code>
-has no effect.  If nghttp found any errors related to flow control, it
-emits FLOW_CONTROL_ERROR and exists nonzero.</p>
-
-<h2>Header compression and multiplexing</h2>
-
-<p>HTTP/2 uses header compression technique called HPACK.  We know that,
-by iterop experience, single request/response is not enough to test
-HPACK.  The problem is more likely happening after several
-request/response transactions.  This is because HPACK uses stateful
-compression mechanism and it requires both server and client share
-same compression context.  If they are out of sync, problem appears.
-So testing HPACK must be done with multiple requests and responses.
-This means that it also exercises multiplexing.</p>
-
-<p>For this purpose, <code>-a</code> option is handy.  If <code>-a</code> is used, nghttp
-parses downloaded HTML file and finds statically linked resources,
-such as CSS, Javascript and images.  Then it requests them which are
-multiplexed in the same HTTP/2 session (same connection).</p>
-
-<p>If nghttp client found an error while decoding header block, it emits
-COMPRESSION_ERROR and exists nonzero.</p>
-
-<h2>Uploading</h2>
-
-<p>To upload the content of a file, use <code>-d</code> option.  By default, nghttp
-adds <code>content-length</code> header field when uploading data.  Specifying
-<code>--no-content-length</code> option will omit <code>content-length</code> header field
-from request header.</p>
-
-<h2>Padding</h2>
-
-<p><code>-b</code> option adds given number of bytes to HEADERS or DATA frame as
-padding.  This will verify that whether server can correctly parse
-frames by taking into account the existence of padding bytes.</p>
-
-<h2>CONTINUATION frame</h2>
-
-<p>Using <code>--continuation</code> will send very large headers to server using
-CONTINUATION frame.  The total header block size (HEADERS +
-CONTINUATION) is around 18K bytes.</p>
-
-<h2>Priority</h2>
-
-<p>Use <code>-a</code> option and see that how server reacts to priority hints given
-from client.  If <code>-a</code> is used, nghttp parses downloaded HTML file and
-finds statically linked resources, such as CSS, Javascript and images.
-Then it requests them which are multiplexed in the same HTTP/2 session
-(same connection).  By default, nghttp prioritizes resources as
-follows:</p>
-
-<ol>
-<li>HTML (highest)</li>
-<li>CSS (high)</li>
-<li>Javascripts (JS) (middle)</li>
-<li>images (low)</li>
-</ol>
-
-
-<p>Then it creates dependency tree and issues requests with this
-dependency hints.  To verify how server reacts to this hints, <code>-r</code>
-option is very useful.  It saves the HTTP transactions to given file
-as HAR format.  Then you can use
-<a href="http://www.softwareishard.com/har/viewer/">HAR file viewer</a> to see
-the load times.  To compare the result without prority, issue the same
-request with <code>--no-dep</code> option, which entirely omits priority hints.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/11/16/visualization-of-http-slash-2-priority/">Visualization of HTTP/2 Priority</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-11-16T18:24:14+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>6:24 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I blogged about
-<a href="/blog/2014/04/27/how-dependency-based-prioritization-works/">how HTTP/2 dependency based prioritization works</a>
-in several month ago.  The prioritization works fine even at that time, but there is one
-problem.  It is a bit hard to track down and check that dependency is actually
-working from nghttp client logging.  On the other hand, we also want a
-tool to measure how well server reacts to the priority hints client
-offers.</p>
-
-<p>As a first step to tackle these problem, I added a feature to nghttp
-client program to output HTTP/2 transaction in well-known
-<a href="https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/HAR/Overview.html">HAR</a>
-format.  We can use existing HAR file viewer to visualize the
-transactions and easily see how well server uses/obeys priority.</p>
-
-<p>Let&rsquo;s see how dependency information affects the resource transfer.
-Currently, nghttp prioritizes resources in 4 categories:</p>
-
-<ol>
-<li>HTML (highest)</li>
-<li>CSS (high)</li>
-<li>Javascripts (
+size becomes 16383 (= 2 **
