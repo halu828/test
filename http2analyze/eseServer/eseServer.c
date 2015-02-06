@@ -6,7 +6,7 @@
 #include <unistd.h>
 
 #define BUF_SIZE 4096
-#define RES_SIZE 50000
+#define RES_SIZE 32768
 
 int sockfd;
 
