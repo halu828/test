@@ -21,7 +21,7 @@ File.open("wakati.txt","w") do |out|
   out.puts "#{wakati.gsub(/ [あ-ん] /, "")}"
 end
 
-# 以下，頻出回数を求めていく
+# 以下, 頻出回数を求めていく
 words = Hash.new(0)
 
 Find.find("wakati.txt") do |find|
@@ -35,7 +35,7 @@ Find.find("wakati.txt") do |find|
 end
 
 
-# ハッシュを一旦配列に入れて，上から10個表示
+# ハッシュを一旦配列に入れて, 上から10個表示
 wordsArr = words.sort_by{|word,count| [-count,word]}.to_a
 
 File.open("output.txt","w") do |output|
@@ -54,7 +54,7 @@ end
 puts "ひらがな一文字は省いています"
 print "RANK\tTIMES\tWORD\t\tRESULT\n"
 for i in 0..29
-  #4文字以上だと出力したときにずれてしまう．bytesでとりだして上位ビットが1であるかどうかを見る．
+  #4文字以上だと出力したときにずれてしまう. bytesでとりだして上位ビットが1であるかどうかを見る.
   if wordsArr[i][0].length < 4 || wordsArr[i][0] =~ /^[0-9A-Za-z]+$/ then
     puts "#{i+1}\t#{wordsArr[i][1]}\t#{wordsArr[i][0]}\t\t#{distance[i]}"
   else
