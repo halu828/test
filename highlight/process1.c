@@ -14,7 +14,7 @@
 #define SIZE 32768
 
 int strrep(char *buf, char *front, char *behind);
-int dump();
+int dump(unsigned char *buf, int len);
 int decode_data(char *s, int len);
 
 
@@ -36,20 +36,23 @@ void process1(int clientSocket, char *ipaddress) {
 	char tmp[SIZE] = "";
 	char method[4] = "";
 	char url[1024] = "";
+	char urlslash[1024] = "";
 	char protocol[16] = "";
-	unsigned char http2buf[SIZE] = "";
-	int http2flag = 0;
+	unsigned char http2buf[SIZE] = ""; /* http/2通信に使用 */
+	int http2flag = 0; /* http/2通信に使用 */
 
 
-	/* ブラウザからのリクエストを受信 */
+
+	/* クライアントからのリクエストを受信 */
 	if ((recvSize = recv(clientSocket, buf, sizeof(buf), 0)) == -1) {
 	#if defined(DEBUG)
-		fprintf(stderr, "ブラウザからの受信に失敗．プロセス終了．\n");
+		fprintf(stderr, "クライアントからの受信に失敗．プロセス終了．\n");
 	#endif
 		close(clientSocket);
 		close(serverSocket);
 		exit(EXIT_SUCCESS);
 	}
+	printf("[request]\n");
 
 	/* bufからメソッドとURLとプロトコルを取得 */
 	sscanf(buf, "%s %s %s", method, url, protocol);
@@ -60,11 +63,18 @@ void process1(int clientSocket, char *ipaddress) {
 	behind = strtok(NULL, "/");
 	strcpy(hostName, behind);
 #if defined(DEBUG)
-	printf("ホスト名: %s\n", hostName);
+	printf("host name: %s\n", hostName);
 #endif
 	behind += strlen(behind) + 1;
 	sprintf(buf, "%s /%s",front, behind);
 	strrep(buf, "Proxy-", ""); /* "Proxy-Connection"を"Connection"に変換 */
+
+	/* URLのスラッシュの後ろの部分を取得. http/2通信で使用. */
+	strcpy(urlslash, url);
+	strrep(urlslash, "http://", "");
+	strrep(urlslash, hostName, "");
+	// printf("%s\n", urlslash);
+
 
 	/* チャンクモードでレスポンスが返ってこないように */
 	strrep(buf, " HTTP/1.1\r\n", " HTTP/1.0\r\n");
@@ -75,14 +85,14 @@ void process1(int clientSocket, char *ipaddress) {
 		/* Chrome専用になってる */
 		if (strstr(url, "?%23q=") != NULL) {
 			strrep(url, "http://www.google.co.jp/?%23q=", "");
-			sprintf(buf, "GET ?gws_rd=ssl#newwindow=1&safe=off&q=%s HTTP/1.0\r\nHost: www.google.co.jp\r\n\r\n", url);
+			sprintf(buf, "GET ?gws_rd=ssl#safe=off&q=%s HTTP/1.0\r\nHost: www.google.co.jp\r\n\r\n", url);
 			/* 検索ワードをword2vecにかける */
 			decode_data(url, strlen(url));
 			if ((fp = fopen("output.txt", "w")) == NULL) {
 				fprintf(stderr, "ファイルのオープンに失敗しました.\n");
 				exit(EXIT_FAILURE);
 			}
-			fprintf(fp, "%s\n", url);
+			// fprintf(fp, "%s\n", url);
 			fclose(fp);
 			/* バックグラウンドでword2vecを起動 */
 			if ((fp = popen("./mydistance jawikisep.bin &", "r")) == NULL) {
@@ -95,7 +105,7 @@ void process1(int clientSocket, char *ipaddress) {
 
 
 #if defined(DEBUG)
-	printf("--------[ブラウザからのリクエスト]--------\n%s",buf);
+	printf("--------[リクエスト]--------\n%s",buf);
 #endif
 
 
@@ -123,32 +133,35 @@ void process1(int clientSocket, char *ipaddress) {
 	}
 
 
+
 	/* nghttp2にアクセスしようとしていたら，ヘッダを作り直す */
-	if (strstr(url, "nghttp2.org") != NULL) {
+	// if (strstr(url, "nghttp2.org") != NULL) {
+	if (strstr(url, "localhost/http2") != NULL) {
 		http2flag = 1;
-		char upgradeHeader[] = "GET / HTTP/1.1\r\n"
-													"Host: nghttp2.org\r\n"
-													"Connection: Upgrade, HTTP2-Settings\r\n"
-													"Upgrade: h2c-14\r\n"
-													"HTTP2-Settings: AAMAAABkAAQAAP__\r\n"
-													"Accept: */*\r\n"
-													"User-Agent: myclient\r\n\r\n";
-		// front = strtok(buf, " ");
-		// strtok(NULL, "/");
-		// behind = strtok(NULL, "/");
-		// sprintf(upgradeHeader, "GET /%s HTTP/1.1\r\n"
-		// 											"Host: %s\r\n"
+		char upgradeHeader[2048] = "";
+		// char upgradeHeader[] = "GET / HTTP/1.0\r\n"
+		// 											"Host: nghttp2.org\r\n"
 		// 											"Connection: Upgrade, HTTP2-Settings\r\n"
 		// 											"Upgrade: h2c-14\r\n"
 		// 											"HTTP2-Settings: AAMAAABkAAQAAP__\r\n"
 		// 											"Accept: */*\r\n"
-		// 											"User-Agent: myclient\r\n\r\n", strtok(NULL, " "), hostName);
-		// printf("%s\n", hostName);
+		// 											"User-Agent: myclient\r\n\r\n";
+		// front = strtok(buf, " ");
+		// strtok(NULL, "/");
+		// behind = strtok(NULL, "/");
+		sprintf(upgradeHeader, "GET %s HTTP/1.1\r\n"
+													"Host: %s\r\n"
+													"Connection: Upgrade, HTTP2-Settings\r\n"
+													"Upgrade: h2c-14\r\n"
+													"HTTP2-Settings: AAMAAABkAAQAAP__\r\n"
+													"Accept: */*\r\n"
+													"User-Agent: myclient\r\n\r\n", urlslash, hostName);
+		printf("%s", upgradeHeader);
 		if (send(serverSocket, upgradeHeader, strlen(upgradeHeader), 0) == -1) {
 			fprintf(stderr, "Failed to send!\n");
 			exit(1);
 		}
-		printf("--------[ブラウザからのリクエスト]--------\n%s",upgradeHeader);
+		// printf("--------[クライアントからのリクエスト]--------\n%s",upgradeHeader);
 
 	} else {
 
@@ -170,6 +183,8 @@ void process1(int clientSocket, char *ipaddress) {
 	else maxSock = serverSocket;
 
 
+
+
 	/* 以下, クライアントかサーバから待ち受け */
 	while(1) {
 		/* bufの中身を初期化 */
@@ -183,17 +198,20 @@ void process1(int clientSocket, char *ipaddress) {
 			continue; /* select()に失敗するとwhile文をやり直す */
 		}
 
-		/* ブラウザから受信できるなら */
+
+
+		/* クライアントから受信できるなら */
 		if (FD_ISSET(clientSocket, &rfds)) {
 		#if defined(DEBUG)
-			printf("ブラウザから受信.\n");
+			printf("クライアントから受信.\n");
 		#endif
 			if ((recvSize = recv(clientSocket, buf, sizeof(buf), 0)) <= 0) {
 			#if defined(DEBUG)
-				fprintf(stderr, "ブラウザからのrecv()の返り値が0以下. プロセス終了.\n");
+				fprintf(stderr, "クライアントからのrecv()の返り値が0以下. プロセス終了.\n");
 			#endif
 				break; /* 受信に失敗したらbreak */
 			}
+			printf("[request]\n");
 
 			/* ホスト名の抽出とリクエストの編集 */
 			if (strncmp(buf, "GET", 3) == 0 || strncmp(buf, "POST", 4) == 0) {
@@ -226,15 +244,18 @@ void process1(int clientSocket, char *ipaddress) {
 		} /* if (FD_ISSET(clientSocket, &rfds)) end */
 
 
+
+
 		/* サーバから受信できるなら */
 		if (FD_ISSET(serverSocket, &rfds)) {
 		#if defined(DEBUG)
 			printf("サーバから受信.\n");
 		#endif
-			if (http2flag == 1) {
+			if (http2flag == 1) { /* http2flagが立っていたら, unsigned char の型で受ける */
 				if ((recvSize = recv(serverSocket, http2buf, sizeof(http2buf), 0)) <= 0) {
 					break; /* 受信に失敗したらbreak */
 				}
+				printf("[recv http2responce]\n");
 			} else {
 				if ((recvSize = recv(serverSocket, buf, sizeof(buf), 0)) <= 0) {
 				#if defined(DEBUG)
@@ -242,6 +263,7 @@ void process1(int clientSocket, char *ipaddress) {
 				#endif
 					break; /* 受信に失敗したらbreak */
 				}
+				printf("[recv http1responce]\n");
 			}
 
 
@@ -249,64 +271,61 @@ void process1(int clientSocket, char *ipaddress) {
 			if (strstr(buf, "Location: https://www.google.co.jp/") != NULL)
 				strrep(buf, "Location: https", "Location: http");
 
-			printf("---HTTP/2---\n%s", http2buf);
+			// printf("---HTTP/2---\n%s", http2buf);
 			/* http/2サーバから"Upgrade: h2c-14"が返ってきたら, http/2→http/1 */
 			if (strstr(http2buf, "Upgrade: h2c-14") != NULL) {
 				printf("Upgrade\n");
-				char *bp;
-				int len, i = 0, bufindex, framelength, padlength, contentslength;
-				// char buf[SIZE] = "";
+				// dump(http2buf, recvSize);
+				int i = 0, bufindex, framelength, padlength, contentslength, flags;
 				unsigned char contents[SIZE] = "";
-				// strstr(buf, "\r\n\r\n")+1
-				// printf("Upgrade: h2c-14\n");
-				/* デコードして, htmlのコンテンツの部分だけを持ってくる. */
-				// printf("[responce]\n");
-				// for (int i = 0; i < recvSize; i++)
-				// 	printf("%02x ", buf[i]);
-				// strstr(buf, "\r\n\r\n")+1;
-				/* \r\n\r\nが2回来るまで進める */
-				/* headerの終わりまで読み飛ばし */
-				// do {
-				// 	if (strstr(buf, "\r\n\r\n")) break;
-				// 	if (strlen(buf) >= sizeof(buf)) memset(&buf, 0, sizeof(buf));
-				// } while (recv(clientSocket, buf+strlen(buf), sizeof(buf) - strlen(buf), 0) > 0);
+				// unsigned char pri[] = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n";
 
-/*
-					fp = fopen("binary.txt", "wb");
-					if (fp == NULL) {
-						printf("書込用ファイルが開けません\n");
-						exit(1);
-					}
-					fwrite(http2buf, sizeof(unsigned char), recvSize, fp);
-					while (1) {
-						memset(buf, '\0', sizeof(buf));
-						recvSize = recv(serverSocket, http2buf, sizeof(http2buf), 0);
-						if (recvSize <= 0) break;
-						fwrite(http2buf, sizeof(unsigned char), recvSize, fp);
-					}
-					fclose(fp);
-					memset(http2buf, '\0', sizeof(http2buf));
-					// dump();
+				/* http2サーバにPRIを送信 */
+				// send(serverSocket, pri, sizeof(pri), 0);
+				// printf("%s\n", buf);
 
-				fp = fopen("binary.txt", "rb");
-				if(fp == NULL){
-					printf("読込用ファイルが開けません\n");
+				/* 一度レスポンスを全て受け取ってファイルに保存する */
+				fp = fopen("binary.txt", "wb");
+				if (fp == NULL) {
+					printf("書込用ファイルが開けません\n");
 					exit(1);
 				}
-				len = fread(http2buf, sizeof(unsigned char), SIZE, fp);
+				while (1) {
+					fwrite(http2buf, sizeof(unsigned char), recvSize, fp);
+					memset(http2buf, '\0', sizeof(http2buf));
+					recvSize = recv(serverSocket, http2buf, sizeof(http2buf), 0);
+					if (recvSize <= 0) break;
+				}
 				fclose(fp);
-*/
 
-				/* ヘッダ送信 */
+				/* 全部受け取ったらGOAWAYフレームを送る */
+				/*
+				char goaway[] = {"00", "00", "08", "07", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00"};
+				if (send(serverSocket, goaway, 17, 0) == -1) {
+					fprintf(stderr, "Failed to send!\n");
+					exit(1);
+				}
+				printf("GOAWAY send\n");
+				*/
+
+				/* HTTP/1.1でヘッダ送信 */
 				char http2header[] = "HTTP/1.1 200 OK\r\n"
 														"Content-type: text/html\r\n\r\n";
 				if (send(clientSocket, http2header, sizeof(http2header), 0) == -1) {
 					fprintf(stderr, "Failed to send!\n");
 					exit(1);
 				}
-				printf("header送信\n");
+				// printf("header送信\n");
+				memset(http2buf, '\0', sizeof(http2buf));
+				fp = fopen("binary.txt", "rb");
+				if(fp == NULL){
+					printf("読込用ファイルが開けません\n");
+					exit(1);
+				}
+				fread(http2buf, sizeof(unsigned char), SIZE, fp);
+				fclose(fp);
 
-				while (1) {
+				while (1) { /* "\r\n\r\n"まで飛ばす */
 					if (http2buf[i] == 0x0D) i++;
 						if (http2buf[i] == 0x0A) i++;
 							if (http2buf[i] == 0x0D) i++;
@@ -317,70 +336,72 @@ void process1(int clientSocket, char *ipaddress) {
 					i++;
 				}
 				bufindex = i;
-				printf("Frame Length = %02x %02x %02x\n", http2buf[bufindex], http2buf[bufindex+1], http2buf[bufindex+2]);
+				// printf("Frame Length (16) = %02x %02x %02x\n", http2buf[bufindex], http2buf[bufindex+1], http2buf[bufindex+2]);
 
-				// while (1) {
-					while (1) {
-						/* フレームの長さ */
-						framelength = http2buf[bufindex] + http2buf[bufindex+1] + http2buf[bufindex+2];
-						// printf("Frame Length = %02x %02x %02x\n", buf[bufindex], buf[bufindex+1], buf[bufindex+2]);
-						bufindex += 3;
-						printf("Frame Type = %02x\n", http2buf[bufindex]);
-						/* フレームの種類を判断 DATA frames (type=0x0) */
-						if (http2buf[bufindex] == 0x0) {
-							// printf("DATA frames\n");
-							// printf("index:%02x value:%02x\n", bufindex, buf[bufindex]);
-							bufindex += 5; /* FlagsとStream Identifier  1+4バイト (8+32ビット)*/
-							bufindex++;
-							padlength = http2buf[bufindex];
-							contentslength = framelength - padlength - 1; /* 1はPad Length自体のバイト数 */
-							bufindex++;
-							// printf("%d %d\n", framelength, padlength);
-							// for (i = 0; i < contentslength; i++) {
-							// 	contents[i] = http2buf[bufindex++];
-							// }
-							// i = 0;
-							// 3C 2F 68 74 6D 6C 3E
-							for (i = 0; i < contentslength; i++) {
-								contents[i] = http2buf[bufindex++];
-								printf("%02x ", http2buf[bufindex]);
-							}
-							printf("%s\n", contents);
-							/* contentsをsend */
-							if (send(clientSocket, contents, i, 0) == -1) {
-								fprintf(stderr, "Failed to send!\n");
-								exit(1);
-							}
-							break;
-						} else {
-							// printf("NOT DATA frames\n");
-							bufindex += 5 + framelength; /* 1+4バイト (8+32ビット)*/
-							bufindex++;
-							// printf("index:%02x value:%02x\n", bufindex, buf[bufindex]);
+				/* HTTP/2レスポンスをデコードしてクライントへコンテンツを送る */
+				while (1) {
+					/* フレームの長さ */
+					framelength = http2buf[bufindex]*0x10000 + http2buf[bufindex+1]*0x100 + http2buf[bufindex+2];
+					// printf("Frame Length = %02x %02x %02x\n", buf[bufindex], buf[bufindex+1], buf[bufindex+2]);
+					printf("Frame Length (2) = %d\n", framelength);
+					bufindex += 3; /* Lengthの長さ分だけ進める */
+					// printf("Frame Type = %02x\n", http2buf[bufindex]);
+					/* フレームの種類を判断 DATA frames (type=0x0) */
+					if (http2buf[bufindex] == 0x00) {
+						printf("DATA frames\n");
+						printf("index:%x Type:%02x\n", bufindex, http2buf[bufindex]);
+						flags = ++bufindex; /* Flags 1バイト */
+						bufindex += 4; /* Stream Identifier  4バイト (32ビット)*/
+						// bufindex++;
+						if (flags == 0x8) padlength = http2buf[bufindex]; /* DATAフレームでflagsが0x8ならPadが設定されてる */
+						else padlength = 0;
+						if (flags == 0x1) printf("END_STREAM\n"); /* DATAフレームでflagsが0x1ならEND_STREAMが設定されてる */
+						contentslength = framelength - padlength - 1; //1はPad Length自体のバイト数 
+						bufindex++;
+						// printf("%d %d\n", framelength, padlength);
+						for (i = 0; i < contentslength; i++) {
+							contents[i] = http2buf[bufindex++];
+							// printf("%02d %02x ", bufindex, http2buf[bufindex]);
 						}
+						dump(contents, i);
+						// printf("%s\n", contents);
+						/* contentsをsend */
+						if (send(clientSocket, contents, i, 0) == -1) {
+							fprintf(stderr, "Failed to send!\n");
+							exit(1);
+						}
+						bufindex++;
+						// break;
+					} else if (http2buf[bufindex] == 0x07) {
+						printf("recv GOAWAY\n");
+						break;
+					} else {
+						printf("NOT DATA frames\n");
+						printf("index:%02x Type:%02x\n", bufindex, http2buf[bufindex]);
+						bufindex += 5 + framelength; /* 1+4バイト (8+32ビット)*/
+						bufindex++;
 					}
 					// bufindex = 0;
-					// recvSize = recv(serverSocket, http2buf, sizeof(http2buf), 0);
-					// if (recvSize <= 0) {
-					// 	http2flag = 0;
-					// 	break;
-					// }
+					memset(contents, '\0', sizeof(contents));
+				} /* while (1) end */
 
-					while (1) {
-						recvSize = recv(serverSocket, http2buf, sizeof(http2buf), 0);
-						if (recvSize <= 0) {
-							http2flag = 0;
-							break;
-						}
-						printf("%s", http2buf);
-						if (send(clientSocket, http2buf, recvSize, 0) == -1) {
-								fprintf(stderr, "Failed to send!\n");
-								exit(1);
-						}
-					}
+				// while (1) {
+				// 	memset(http2buf, '\0', sizeof(http2buf));
+				// 	recvSize = recv(serverSocket, http2buf, sizeof(http2buf), 0);
+				// 	if (recvSize <= 0) {
+				// 		http2flag = 0;
+				// 		break;
+				// 	}
+				// 	dump(http2buf, recvSize);
+				// 	if (send(clientSocket, http2buf, recvSize, 0) == -1) {
+				// 			fprintf(stderr, "Failed to send!\n");
+				// 			exit(1);
+				// 	}
+				// } /* while (1) end */
 
-				// }
-			}
+			} /* if (strstr(http2buf, "Upgrade: h2c-14") != NULL) end */
+
+
 
 			/* Googleの検索結果にHTTP/2対応サーバへのリンクを表示 */
 			// if (strstr(buf, "Host: www.google.co.jp") != NULL && strcasestr(buf, "<body") != NULL) {
@@ -399,40 +420,7 @@ void process1(int clientSocket, char *ipaddress) {
 			// }
 
 
-			/* Ruby起動してその出力をもらう */
-			// if (strcasestr(buf, "Content-Type: text/html") != NULL) { /* http/2だと処理が違う. コンテンツだけをうまいこと取り出してくる */
-			// 	// flag = 1;
-			// 	char *cmdline = "/usr/bin/ruby highlight.rb";
-			// 	char tmp[SIZE] = "";
-			// 	char *header = "HTTP/1.1 200 OK\r\n"
-			// 			"Content-type: text/html\r\n\r";
-			// 	if ((fp = (FILE*)fopen("html.txt","w")) == NULL) {
-			// 			err(EXIT_FAILURE, "%s", "html.txt");
-			// 	}
-			// 	while (1) {
-			// 		if ((tp = strstr(buf, "\r\n\r\n")) != NULL) fprintf(fp, "%s", tp+1);
-			// 		else fprintf(fp, "%s", buf);
-			// 		if (recvSize <= 0) break;
-			// 		recvSize = recv(serverSocket, buf, sizeof(buf), 0);
-			// 	}
-			// 	fclose(fp);
-
-			// 	memset(buf, '\0', sizeof(buf));
-			// 	if ((fp = popen(cmdline, "r")) == NULL) {
-			// 		err(EXIT_FAILURE, "%s", cmdline);
-			// 	}
-			// 	while (fgets(tmp, SIZE, fp) != NULL) {
-			// 		strcat(buf, tmp);
-			// 	}
-			// 	pclose(fp);
-			// 	send(clientSocket, header, strlen(header), 0);
-			// 	send(clientSocket, buf, recvSize, 0);
-			// } else {
-			// 	if (send(clientSocket, buf, recvSize, 0) == -1) {
-			// 		fprintf(stderr, "Failed to send!\n");
-			// 		exit(1);
-			// 	}
-			// }
+			/* word2vecの結果の文字をハイライト */
 			if ((fp = fopen("resultWord.txt", "r")) == NULL) {
 				fprintf(stderr, "ファイルのオープンに失敗しました.\n");
 				exit(EXIT_FAILURE);
@@ -440,9 +428,8 @@ void process1(int clientSocket, char *ipaddress) {
 			char resultWord[128];
 			fgets(resultWord, 128, fp);
 			resultWord[strlen(resultWord) - 1] = '\0';
-			if (strcasestr(buf, "Content-Type: text/html") != NULL && strstr(buf, resultWord) != NULL) {/* http/2だと処理が違う. コンテンツだけをうまいこと取り出してくる */
-			// 	flag = 1;
-			// if (flag == 1) {
+			if (strcasestr(buf, "Content-Type: text/html") != NULL && strstr(buf, resultWord) != NULL) { /* http/2だと処理が違う. コンテンツだけをうまいこと取り出してくる */
+				printf("[highlight]\n");
 				char *cmdline = "/usr/bin/ruby highlight.rb";
 				char *header = "HTTP/1.0 200 OK\r\n"
 						"Content-type: text/html\r\n\r";
@@ -468,71 +455,16 @@ void process1(int clientSocket, char *ipaddress) {
 					}
 				}
 				pclose(fp);
-				// send(clientSocket, buf, strlen(buf), 0);
-				// printf("%s\n", buf);
+
 			} else {
 				if (send(clientSocket, buf, recvSize, 0) == -1) {
 					fprintf(stderr, "Failed to send!\n");
 					exit(1);
 				}
-				// printf("---------[レスポンス]---------\n%s\n", buf);
 			#if defined(DEBUG)
 				printf("---------[レスポンス]---------\n%s\n", buf);
 			#endif
-			}
-			// if (strcasestr(buf, "</html") != NULL) flag = 0;
-
-			/* ハイライト(body部分だけ) */
-			// if (strcasestr(buf, "<body") != NULL) flag = 1;
-			// if (flag == 1) {
-			// 	strrep(buf, "情報", "<span style=\"background-color: #ffff00\"><b>情報</b></span>");
-			// }
-			// if (strcasestr(buf, "</body") != NULL) flag = 0;
-
-			// strrep(buf, "Transfer-Encoding: chunked\r\n", "");
-
-			// int count = 0;
-			// while (1) {
-			// 	if (strrep(buf, "情報", "<span style=\"background-color: #ffff00\"><b>情報</b></span>") == 0) break;
-			// 	count++;
-			// }
-
-			// if (strrep(buf, "情報", "<span style=\"background-color: #ffff00\"><b>情報</b></span>") == 0)
-			// recvSize += 54;
-			// strrep(buf, "情報", "<span style=\"background-color: #ffff00\"><b>情報</b></span>");
-
-			// printf("%d\n", recvSize);
-		// 	if (strstr(buf, "情報") != NULL) {
-		// 	if (strrep(buf, "情報", "<span style=\"background-color: #ffff00\"><b>情報</b></span>") == 1) {
-		// 		printf("置換\n");
-		// 		int num_chunked = 0;
-		// 		char ch_chunked[8];
-		// 		front = strstr(buf, "\r\n\r\n");
-		// 		behind = strstr(front, "\r\n");
-		// 		// printf("%d", atoi(behind));
-		// 		// behind += strlen(behind) + 1;
-		// 		// sprintf(buf, "%s%d%s",front, chunked, behind);
-		// 		sprintf(ch_chunked, "%d", atoi(behind)+54);
-		// 		printf("%s %s\n", behind, ch_chunked);
-		// 		strrep(buf, behind, ch_chunked);
-		// 		recvSize+=54;
-		// 	}
-		// }
-
-			// printf("%d %d\n", recvSize, strlen(buf));
-			// printf("---------[レスポンス]---------\n%s\n", buf);
-		// #if defined(DEBUG)
-		// 	printf("---------[レスポンス]---------\n%s\n", buf);
-		// #endif
-			/* ブラウザへレスポンスを転送 */
-			// if (send(clientSocket, buf, recvSize, 0) == -1) {
-			// 	fprintf(stderr, "Failed to send!\n");
-			// 	exit(1);
-			// }
-		// #if defined(DEBUG)
-		// 	printf("[ブラウザへレスポンスを転送]\n");
-		// #endif
-
+			} /* (strcasestr(buf, "Content-Type: text/html") != NULL && strstr(buf, resultWord) != NULL) end */
 
 
 			/* htmlコードだけをhtml.txtに保存 */
@@ -560,8 +492,8 @@ void process1(int clientSocket, char *ipaddress) {
 }
 
 
+
 /* 置換する. buf の中の front を behind にする. 成功=1 失敗=0
- * keep-aliveのヘッダ編集, パケット改変に使用
  * 置換は1回だけ
  */
 int strrep(char *buf, char *front, char *behind) {
@@ -576,20 +508,12 @@ int strrep(char *buf, char *front, char *behind) {
 	return 1;
 }
 
-int dump() {
-  FILE *fpr;
-  int len, data, i, index = 0;
-  unsigned char buf[SIZE];
+int dump(unsigned char *buf, int len) {
+  // FILE *fpr;
+  int data, i, index = 0;
+  // unsigned char buf[SIZE];
   unsigned char temp[SIZE];
   unsigned long addr;
-
-  fpr = fopen("binary.txt", "rb");
-  if(fpr == NULL){
-    printf("読込用ファイルが開けません\n");
-    exit(1);
-  }
-  len = fread(buf, sizeof(unsigned char), SIZE, fpr);
-  fclose(fpr);
 
   for (addr = 0; ; addr += 16) {
     printf("%08lX  ", addr);
@@ -611,6 +535,7 @@ int dump() {
   }
 }
 
+/* url デコード */
 int decode_data(char *s, int len) {
 	int i, j, k;
 	char buf, *ch;
