@@ -26,7 +26,7 @@ int sockfd;
 
 /* Ctrl+Cの割り込みで行う処理 */
 void SigHandler(int SignalName) {
-	fprintf(stderr, "\nWebサーバを終了します．\n");
+	fprintf(stderr, "\nWebサーバを終了します.\n");
 	close(sockfd);
 	exit(0);
 }
@@ -128,7 +128,7 @@ int main(int argc, char *argv[]) {
 				exit(1);
 			}
 
-		} else {
+		} else { /* Upgrade リクエスト以外のとき */
 
 			/* request headerの終わりまで読み飛ばし */
 			/* bodyは無視	 */
@@ -149,13 +149,8 @@ int main(int argc, char *argv[]) {
 
 			/* index.html補完 */
 			if (file[strlen(file)-1] == '/') {
-				strcat(file, "index.html" );
+				strcat(file, "index.html");
 			}
-
-			/* debug */
-			#ifdef DEBUG
-				sleep(1);
-			#endif
 
 			/* body送信
 			 * ファイルが開けなかった場合は404のヘッダと404.htmlを送る
@@ -167,13 +162,11 @@ int main(int argc, char *argv[]) {
 				fprintf(stderr, "file: %s\n", file);
 				sprintf(file, "%s/404.html", path); /* [カレントディレクトリ]/404.html */
 				filefd = open(file, O_RDONLY);
-				header = "HTTP/1.1 404 Not Found\n"
-							"Content-type: text/html\n"
-							"\n";
+				header = "HTTP/1.1 404 Not Found\r\n\r\n";
+							// "Content-type: text/html\r\n\r\n";
 			} else {
-				header = "HTTP/1.0 200 OK\n"
-							"Content-type: text/html\n"
-							"\n";
+				header = "HTTP/1.0 200 OK\r\n\r\n";
+							// "Content-type: text/html\r\n\r\n";
 			}
 
 			send(newfd, header, strlen(header), 0);
@@ -182,7 +175,7 @@ int main(int argc, char *argv[]) {
 					perror("send2");
 				}
 			}
-	}
+		} /* if (recv(newfd, buf, sizeof(buf), 0) < 0) end */
 
 		close(newfd);
 	}

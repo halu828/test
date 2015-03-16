@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
 	struct sockaddr_in BrowserAddr;
 	struct hostent *HostInfo;
 	int opt;
-	int httpNumber;
+	int httpNumber = 1;
 	int portNumber;
 	int bl = 1; /* bind()失敗対策 */
 	int clientSocket;

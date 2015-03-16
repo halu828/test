@@ -92,9 +92,12 @@ void process1(int clientSocket, char *ipaddress) {
 				fprintf(stderr, "ファイルのオープンに失敗しました.\n");
 				exit(EXIT_FAILURE);
 			}
-			// fprintf(fp, "%s\n", url);
+			fprintf(fp, "%s\n", url);
 			fclose(fp);
 			/* バックグラウンドでword2vecを起動 */
+			// if ((fp = popen("./mydistance vectors.bin &", "r")) == NULL) {
+			// 	err(EXIT_FAILURE, "%s", "./mydistance vectors.bin &");
+			// }
 			if ((fp = popen("./mydistance jawikisep.bin &", "r")) == NULL) {
 				err(EXIT_FAILURE, "%s", "./mydistance jawikisep.bin &");
 			}
@@ -135,8 +138,9 @@ void process1(int clientSocket, char *ipaddress) {
 
 
 	/* nghttp2にアクセスしようとしていたら，ヘッダを作り直す */
-	// if (strstr(url, "nghttp2.org") != NULL) {
-	if (strstr(url, "localhost/http2") != NULL) {
+	/* if (strstr(url, "nghttp2.org") != NULL) {*/
+	// if (strstr(url, "http2") != NULL) {
+	if (strstr(url, "localhost") != NULL) {
 		http2flag = 1;
 		char upgradeHeader[2048] = "";
 		// char upgradeHeader[] = "GET / HTTP/1.0\r\n"
@@ -270,10 +274,10 @@ void process1(int clientSocket, char *ipaddress) {
 			/* esegoogleのための処理. レスポンスにhttpsがついてたらsをはずす. */
 			if (strstr(buf, "Location: https://www.google.co.jp/") != NULL)
 				strrep(buf, "Location: https", "Location: http");
-
 			// printf("---HTTP/2---\n%s", http2buf);
 			/* http/2サーバから"Upgrade: h2c-14"が返ってきたら, http/2→http/1 */
 			if (strstr(http2buf, "Upgrade: h2c-14") != NULL) {
+				dump(http2buf, recvSize);
 				printf("Upgrade\n");
 				// dump(http2buf, recvSize);
 				int i = 0, bufindex, framelength, padlength, contentslength, flags;
@@ -356,14 +360,14 @@ void process1(int clientSocket, char *ipaddress) {
 						if (flags == 0x8) padlength = http2buf[bufindex]; /* DATAフレームでflagsが0x8ならPadが設定されてる */
 						else padlength = 0;
 						if (flags == 0x1) printf("END_STREAM\n"); /* DATAフレームでflagsが0x1ならEND_STREAMが設定されてる */
-						contentslength = framelength - padlength - 1; //1はPad Length自体のバイト数 
+						contentslength = framelength - padlength - 1; /*1はPad Length自体のバイト数 */
 						bufindex++;
 						// printf("%d %d\n", framelength, padlength);
 						for (i = 0; i < contentslength; i++) {
 							contents[i] = http2buf[bufindex++];
 							// printf("%02d %02x ", bufindex, http2buf[bufindex]);
 						}
-						dump(contents, i);
+						// dump(contents, i);
 						// printf("%s\n", contents);
 						/* contentsをsend */
 						if (send(clientSocket, contents, i, 0) == -1) {
@@ -384,20 +388,6 @@ void process1(int clientSocket, char *ipaddress) {
 					// bufindex = 0;
 					memset(contents, '\0', sizeof(contents));
 				} /* while (1) end */
-
-				// while (1) {
-				// 	memset(http2buf, '\0', sizeof(http2buf));
-				// 	recvSize = recv(serverSocket, http2buf, sizeof(http2buf), 0);
-				// 	if (recvSize <= 0) {
-				// 		http2flag = 0;
-				// 		break;
-				// 	}
-				// 	dump(http2buf, recvSize);
-				// 	if (send(clientSocket, http2buf, recvSize, 0) == -1) {
-				// 			fprintf(stderr, "Failed to send!\n");
-				// 			exit(1);
-				// 	}
-				// } /* while (1) end */
 
 			} /* if (strstr(http2buf, "Upgrade: h2c-14") != NULL) end */
 
